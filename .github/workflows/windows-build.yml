@@ -49,6 +49,8 @@ jobs:
           path: build/windows/dist/BiyoVes/**
 
       - name: Smoke test GUI launch
+        env:
+          BIYOVES_SKIP_FIREBASE: "1"
         run: |
           ./scripts/windows_smoke_test.ps1 -ExecutablePath "build/windows/dist/BiyoVes/BiyoVes.exe"
 

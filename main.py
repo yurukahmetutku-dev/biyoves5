@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import sys
 import json
 from pathlib import Path
@@ -15,6 +16,8 @@ from app.config import firebase_manager
 
 def initialize_firebase():
     """Firebase SDK'yi tek seferlik başlat"""
+    if os.getenv("BIYOVES_SKIP_FIREBASE"):
+        return
     if firebase_admin._apps:
         return
     firebase_manager.initialize()
