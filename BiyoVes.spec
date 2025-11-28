@@ -72,7 +72,7 @@ hiddenimports = sorted(set(hiddenimports))
 
 a = Analysis(
     ["main.py"],
-    pathex=[str(Path(__file__).parent)],
+    pathex=[str(Path(__file__).resolve().parent if "__file__" in globals() else Path.cwd())],
     binaries=binaries,
     datas=datas,
     hiddenimports=hiddenimports,
