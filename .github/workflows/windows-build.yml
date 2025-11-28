@@ -43,10 +43,9 @@ jobs:
             --workpath "$buildDir/build" `
             --copy-metadata PySide6 `
             --copy-metadata shiboken6 `
-            --collect-qt-plugins=platforms `
-            --hidden-import PySide6.QtWidgets `
-            --hidden-import PySide6.QtGui `
-            --hidden-import PySide6.QtCore `
+            --collect-submodules PySide6 `
+            --collect-data PySide6 `
+            --collect-binaries PySide6 `
             --noconsole `
             main.py
 
