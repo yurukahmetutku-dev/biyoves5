@@ -1,0 +1,95 @@
+name: Windows Build
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: pwsh
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pyinstaller==6.10.0
+
+      - name: Ensure assets exist
+        run: |
+          if (!(Test-Path ".\assets")) { Write-Error "assets klasörü eksik"; exit 1 }
+          if (!(Test-Path ".\assets\haarcascade_frontalface_default.xml")) { Write-Error "haarcascade eksik"; exit 1 }
+          if (!(Test-Path ".\icon.ico")) { Write-Error "icon.ico eksik"; exit 1 }
+
+      - name: Build exe with PyInstaller
+        run: |
+          New-Item -ItemType Directory -Force -Path "build\windows\dist" | Out-Null
+          pyinstaller --clean --noconfirm `
+            --name BiyoVes `
+            --distpath build/windows/dist `
+            --workpath build/windows/build `
+            main.py `
+            --noconsole `
+            --icon icon.ico
+
+      - name: Upload portable artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BiyoVesNew-portable
+          path: build/windows/dist/BiyoVes/**
+
+      - name: Install Inno Setup
+        run: choco install innosetup --no-progress -y
+
+      - name: Build Installer (.exe)
+        run: |
+          New-Item -ItemType Directory -Force -Path "build\windows\installer" | Out-Null
+          iscc build/windows/installer.iss
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: BiyoVesNew-Installer
+          path: build/windows/installer/*.exe
+
+      - name: Smoke Test Installer
+        run: |
+          Write-Host "Installer testi başlıyor..." -ForegroundColor Cyan
+          $installer = Get-ChildItem "build\windows\installer\*.exe" | Select-Object -First 1
+          if (-not $installer) {
+            Write-Error "Installer bulunamadı!"
+            exit 1
+          }
+
+          $installDir = Join-Path $env:LOCALAPPDATA "Programs\BiyoVesNew"
+          if (Test-Path $installDir) {
+            Remove-Item -Path $installDir -Recurse -Force -ErrorAction SilentlyContinue
+          }
+
+          $args = "/VERYSILENT", "/NORESTART", "/SUPPRESSMSGBOXES"
+          $process = Start-Process -FilePath $installer.FullName -ArgumentList $args -Wait -PassThru -NoNewWindow
+          if ($process.ExitCode -ne 0) {
+            Write-Error "Kurulum başarısız! ExitCode: $($process.ExitCode)"
+            exit 1
+          }
+
+          $exePath = Join-Path $installDir "BiyoVes.exe"
+          if (-not (Test-Path $exePath)) {
+            Write-Error "Kurulmuş exe bulunamadı: $exePath"
+            exit 1
+          }
+
+          Write-Host "Kurulum başarılı, uygulama bulundu: $exePath" -ForegroundColor Green
