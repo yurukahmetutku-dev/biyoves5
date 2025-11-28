@@ -38,16 +38,9 @@ jobs:
           New-Item -ItemType Directory -Force -Path "$buildDir/build" | Out-Null
 
           pyinstaller --clean --noconfirm `
-            --name BiyoVes `
             --distpath "$buildDir/dist" `
             --workpath "$buildDir/build" `
-            --copy-metadata PySide6 `
-            --copy-metadata shiboken6 `
-            --collect-submodules PySide6 `
-            --collect-data PySide6 `
-            --collect-binaries PySide6 `
-            --noconsole `
-            main.py
+            BiyoVes.spec
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4

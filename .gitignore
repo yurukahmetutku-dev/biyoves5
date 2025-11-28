@@ -10,6 +10,7 @@ build/windows/*
 !build/windows/installer.iss
 dist/
 *.spec
+!BiyoVes.spec
 
 # Installer artifacts
 *.exe
