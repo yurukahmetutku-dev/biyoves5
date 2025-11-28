@@ -32,7 +32,8 @@ jobs:
       - name: Build exe with PyInstaller
         run: |
           $buildDir = "build/windows"
-          Remove-Item -Recurse -Force $buildDir -ErrorAction SilentlyContinue
+          Remove-Item -Recurse -Force "$buildDir/dist" -ErrorAction SilentlyContinue
+          Remove-Item -Recurse -Force "$buildDir/build" -ErrorAction SilentlyContinue
           New-Item -ItemType Directory -Force -Path "$buildDir/dist" | Out-Null
           New-Item -ItemType Directory -Force -Path "$buildDir/build" | Out-Null
 
