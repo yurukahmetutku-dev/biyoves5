@@ -41,7 +41,12 @@ jobs:
             --name BiyoVes `
             --distpath "$buildDir/dist" `
             --workpath "$buildDir/build" `
-            --collect-all PySide6 `
+            --copy-metadata PySide6 `
+            --copy-metadata shiboken6 `
+            --collect-qt-plugins=platforms `
+            --hidden-import PySide6.QtWidgets `
+            --hidden-import PySide6.QtGui `
+            --hidden-import PySide6.QtCore `
             --noconsole `
             main.py
 
