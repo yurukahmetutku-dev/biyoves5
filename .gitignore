@@ -1,0 +1,26 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.spec
+
+# Installer artifacts
+*.exe
+*.msi
+
+# Virtual environments
+.venv/
+venv/
+
+# Misc
+.DS_Store
+*.log
+session.json
+
+# VS Code / IDE
+.vscode/
+.idea/
