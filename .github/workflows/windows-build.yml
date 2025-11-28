@@ -50,6 +50,10 @@ jobs:
           name: BiyoVes-windows
           path: build/windows/dist/BiyoVes/**
 
+      - name: Smoke test GUI launch
+        run: |
+          ./scripts/windows_smoke_test.ps1 -ExecutablePath "build/windows/dist/BiyoVes/BiyoVes.exe"
+
       - name: Install Inno Setup
         run: choco install innosetup --no-progress -y
 
