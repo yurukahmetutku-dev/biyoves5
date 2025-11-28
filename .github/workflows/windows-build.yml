@@ -41,6 +41,7 @@ jobs:
             --name BiyoVes `
             --distpath "$buildDir/dist" `
             --workpath "$buildDir/build" `
+            --noconsole `
             main.py
 
       - name: Upload build artifact
